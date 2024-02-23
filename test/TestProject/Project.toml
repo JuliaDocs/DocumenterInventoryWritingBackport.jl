@@ -1,0 +1,7 @@
+name = "TestProject"
+uuid = "a0bfa0e2-e469-425b-adce-3bcd430f1c99"
+authors = ["Michael Goerz <mail@michaelgoerz.net> and contributors"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1"

@@ -1,0 +1,6 @@
+[deps]
+DocInventories = "43dc2714-ed3b-44b5-b226-857eda1aa7de"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DocumenterInventoryWritingBackport = "195adf08-069f-4855-af3e-8933a2cdae94"
+JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

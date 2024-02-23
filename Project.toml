@@ -1,0 +1,15 @@
+name = "DocumenterInventoryWritingBackport"
+uuid = "195adf08-069f-4855-af3e-8933a2cdae94"
+authors = ["Michael Goerz <mail@michaelgoerz.net> and contributors"]
+version = "0.1.0-dev"
+
+[deps]
+CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+
+[compat]
+CodecZlib = "0.7"
+Documenter = "0.25,0.26,0.27,1.0"
+TOML = "1"
+julia = "1"

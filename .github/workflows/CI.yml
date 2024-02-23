@@ -1,0 +1,86 @@
+name: CI
+on:
+  push:
+    branches:
+      - master
+      - dev
+      - 'release-*'
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - master
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+jobs:
+  test:
+    name: Test for Documenter ${{ matrix.documenter_version }} (Julia ${{ matrix.julia_version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - documenter_version: "0.25"
+            julia_version: "1.6"
+          - documenter_version: "0.26"
+            julia_version: "1.7"
+          - documenter_version: "0.27"
+            julia_version: "1.8"
+          - documenter_version: "1.1"
+            julia_version: "1.9"
+          - documenter_version: "1.2"
+            julia_version: "1.10"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.julia_version }}
+      - uses: julia-actions/cache@v1
+      - name: "Instantiate test environment"
+        shell: julia --color=yes --project=test {0}
+        env:
+          DOCUMENTER_VERSION: '${{ matrix.documenter_version }}'
+        run: |
+          import Pkg
+          Pkg.develop(path=".")
+          Pkg.pin([
+              Pkg.PackageSpec(name="Documenter", version=ENV["DOCUMENTER_VERSION"]),
+          ])
+          Pkg.instantiate()
+          Pkg.resolve()
+          Pkg.status()
+      - name: "Run tests"
+        shell: julia --color=yes --project=test {0}
+        run: |
+          include(joinpath(pwd(), "test", "runtests.jl"))
+  codestyle:
+    name: Codestyle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: '1'
+      - name: Install JuliaFormatter and format
+        # This will use the latest version by default but you can set the version like so:
+        #
+        # julia  -e 'using Pkg; Pkg.add(PackageSpec(name="JuliaFormatter", version="0.13.0"))'
+        shell: julia {0}
+        run: |
+          using Pkg
+          Pkg.add(PackageSpec(name="JuliaFormatter"))
+          using JuliaFormatter
+          format(["src", "test", "devrepl.jl"], verbose=true)
+      - name: Format Check
+        shell: julia {0}
+        run: |
+          out = Cmd(`git diff -U0`) |> read |> String
+          if out == ""
+              exit(0)
+          else
+              @error "Some files have not been formatted !!!\n\n$out"
+              exit(1)
+          end
