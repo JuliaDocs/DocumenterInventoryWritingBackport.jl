@@ -29,10 +29,14 @@ jobs:
             julia_version: "1.7"
           - documenter_version: "0.27"
             julia_version: "1.8"
-          - documenter_version: "1.1"
+          - documenter_version: "1.0"
             julia_version: "1.9"
-          - documenter_version: "1.2"
+          - documenter_version: "1.1"
             julia_version: "1.10"
+          - documenter_version: "1.2"
+            julia_version: "1"
+          - documenter_version: "master"
+            julia_version: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@v1
@@ -46,9 +50,13 @@ jobs:
         run: |
           import Pkg
           Pkg.develop(path=".")
-          Pkg.pin([
-              Pkg.PackageSpec(name="Documenter", version=ENV["DOCUMENTER_VERSION"]),
-          ])
+          if ENV["DOCUMENTER_VERSION"] == "master"
+              Pkg.develop(url="https://github.com/JuliaDocs/Documenter.jl")
+          else
+              Pkg.pin([
+                  Pkg.PackageSpec(name="Documenter", version=ENV["DOCUMENTER_VERSION"]),
+              ])
+          end
           Pkg.instantiate()
           Pkg.resolve()
           Pkg.status()

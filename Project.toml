@@ -1,7 +1,7 @@
 name = "DocumenterInventoryWritingBackport"
 uuid = "195adf08-069f-4855-af3e-8933a2cdae94"
 authors = ["Michael Goerz <mail@michaelgoerz.net> and contributors"]
-version = "0.1.0"
+version = "0.1.0+dev"
 
 [deps]
 CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
